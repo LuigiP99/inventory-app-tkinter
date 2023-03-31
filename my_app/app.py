@@ -185,16 +185,19 @@ class App(tk.Tk):
 
     def delete_product(self):
         try:
-            conn = get_conn()
-            cursor = conn.cursor()
+            if len(self.sale_summary_list.get('1.0', 'end-1c')) == 0:
+                conn = get_conn()
+                cursor = conn.cursor()
 
-            query = '''DELETE FROM products WHERE id = %s'''
-            cursor.execute(query, (self.listbox.selection_get().split()[0],))
+                query = '''DELETE FROM products WHERE id = %s'''
+                cursor.execute(query, (self.listbox.selection_get().split()[0],))
 
-            conn.commit()
-            cursor.close()
+                conn.commit()
+                cursor.close()
 
-            self.display_products()
+                self.display_products()
+            else:
+                messagebox.showerror('Error', 'You can\'t Update of Delete a product while a sale is in progress')
         except:
             messagebox.showerror('Invalid Product', 'Error: You have to select one product of the list')
 
@@ -207,7 +210,10 @@ class App(tk.Tk):
         from .update_product_toplevel import UpdateProduct
         try:
             if self.listbox.focus_get() == self.listbox:
-                UpdateProduct(self)
+                if len(self.sale_summary_list.get('1.0', 'end-1c')) == 0:
+                    UpdateProduct(self)
+                else:
+                    messagebox.showerror('Error', 'You can\'t Update of Delete a product while a sale is in progress')
             else:
                 messagebox.showerror('Invalid Product', 'Error: You have to select one product of the list')
         except:

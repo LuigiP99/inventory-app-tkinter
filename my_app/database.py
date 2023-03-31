@@ -1,8 +1,14 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+database_uri = os.environ.get('DATABASE_URL')
 
 def get_conn():
     conn = psycopg2.connect(
-        'postgres://LuigiP99:nDojB7gIS2qX@ep-hidden-snowflake-082754.us-west-2.aws.neon.tech/neondb'
+        database_uri
         )
     
     return conn
